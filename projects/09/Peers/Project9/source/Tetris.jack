@@ -1,0 +1,251 @@
+// This file was created by Andrew Clappison using 
+// projects/09/Square/SquareGame.jack as a template.
+
+/**
+ * Implements Tetris
+ * 
+ * There are 7 shapes which can be forward rotated (f), reverse rotated (r), moved right (right arrow), 
+ * moved left (left arrow), and increased speed moving down (down arrow). 
+ * 
+ * The order of operations in Tetris loop:
+ *   1. Start New Shape:
+ * 		-> If shape overlaps other shapes on grid, game over.
+ *		-> Otherwise, continue.
+ *   2. Check for key press, if it results in valid new placement of the shape then keep the new placement.
+ * 		-> If the "Q" key is pressed then the game exits.
+ *   3. Check if shape can be moved down further:
+ * 	 	-> If so move down, go to step 2.
+ * 	 	-> If not, make shape part of grid. Then, check if solid row(s) exists, 
+ * 		   if any exist delete them and shift everything down. Update Score.
+ *   5. Go Back to Step 1. 
+ *
+ * Extra Notes:
+ *  - Each solid row deleted increases the score by 10
+ *  - Every shape made part of the grid increases score by 1
+ *
+ */
+
+class Tetris {
+	field Grid grid; 
+	
+	field int curShape;
+	field int nextShape; //For potential future functionality of displaying next shape
+	field int numShapes;
+	
+	field int level; //For potential future funcionality of having levels
+	field int score;
+
+	constructor Tetris new() {
+		var int r;
+		var int c;
+
+		let grid = Grid.new(16, 12); // A 16 row x 12 column grid 
+					     // Playable Area = upper-inner 15 rows x 10 columns
+		
+		// Set the left, right, and bottom borders of the grid to black and the rest to white
+		let r = 0;
+		while(r < 16) {
+			let c = 0;
+			while(c < 12) {	
+				if((c = 0) | (c = 11) | (r = 15)) {
+					do grid.setBlack(r,c);
+				} else {
+					do grid.setWhite(r,c);
+				}
+				let c = c + 1;
+			}
+			let r = r + 1;	
+		} 	
+		
+		let curShape = 0;
+		let nextShape = 0;
+		let numShapes = 7;
+
+		let level = 1;
+		let score = 0;
+		
+		return this;
+	}
+
+	method void run() {
+		var char key;
+		var boolean gameLoop;
+		var boolean pieceLoop;
+		var Shape shape;
+		var int completedRows;
+
+		// Display the initial game screen content
+		do grid.display();
+		do GameFunc.printInfo();
+		do GameFunc.printScore(level, score);
+		do GameFunc.printInstructions();	
+
+		// Each iteration of the game loop:
+		// (1) adds a new shape,
+		// (2) checks that the new piece does not cause game over,
+		// (3) runs the pieceLoop, 
+		// (4) checks if any full rows are to be removed, 
+		// (5) updates the score.
+		let gameLoop = true;
+		while(gameLoop) {
+	
+			// Start a new shape at the top	
+			let shape = Shape.new(nextShape);
+			do shape.display();
+			let curShape = nextShape;
+			let nextShape = nextShape + 1;
+			if(nextShape > (numShapes - 1)) {
+				let nextShape = 0;
+			}
+			
+
+			// Each iteration of the piece loop:
+			// (1) Does a left, right, down, rotation, quit, or no action
+			//     depending on the key pressed by the user. 
+			// (2) Does a move down action if valid, otherwise exits the 
+			//     loop.
+			if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+				let pieceLoop = false;
+				let gameLoop = false;
+			} else {
+				let pieceLoop = true;
+			}
+			while(pieceLoop) {
+
+				let key = Keyboard.keyPressed();
+				
+				// This key is "Q" and if pressed the game exits and it is game over.
+				if(key = 81) {
+					let gameLoop = false;
+					let pieceLoop = false;
+				}
+
+				// Rotation Functions
+				// These  works by rotating the shape, seeing if it results in a valid position
+				// and if not undo the rotation before displaying the shape again.
+
+				// This key is "F" and if pressed the shape Forward Rotates.
+				if(key = 70) {
+					do shape.erase();
+					do shape.rotate();
+					
+					if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+						do shape.revRotate();
+					}
+	
+					do shape.display();
+	
+				}
+				// This is key "R" and if pressed the shape Reverse Rotates.
+				if(key = 82) {
+					do shape.erase();
+					do shape.revRotate();
+					
+					if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+						do shape.rotate();
+					}
+	
+					do shape.display();
+	
+				}
+				
+				// Movement Functions
+				// These work by moving the shape, seeing if it results in a valid position
+				// and if not undo the move before displaying the shape again.
+
+				// This is the "Left Arrow" key used to move the shape left 1 square	
+				if(key = 130) {
+					do shape.erase();
+					do shape.shiftLeft();
+					
+					if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+						do shape.shiftRight();
+					}
+	
+					do shape.display();
+				}
+				// This is the "Up Arrow" key used to move the shape left 1 square
+				// This was created for debugging purposes and should usually be disabled
+				if((key = 131) & false) {
+					do shape.erase();
+					do shape.shiftUp();
+	
+					if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+						do shape.shiftDown();
+					}
+	
+					do shape.display();
+				}
+				// This is the "Right Arrow" key used to move the shape left 1 square
+				if(key = 132) {
+					do shape.erase();
+					do shape.shiftRight();
+	
+					if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+						do shape.shiftLeft();
+					}
+	
+					do shape.display();
+				}
+				// This is the "Down Arrow" key used to move the shape down 1 square
+				// It can be used to double the speed of the shape dropping
+				if(key = 133) {
+					do shape.erase();
+					do shape.shiftDown();
+	
+					if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+						do shape.shiftUp();
+					}
+	
+					do shape.display();
+				}
+
+				do Sys.wait(100);
+				
+				// Timed move down, if the move down results in an invalid position, then
+				// undo the move and the shape has reached it's final position before becoming
+				// part of the grid itself. 
+
+				do shape.erase();	
+				do shape.shiftDown();
+				let completedRows = 0;
+				if(GameFunc.checkOverlap(shape.getGridArray(), grid.getGridArray(), 16*12)) {
+					do shape.shiftUp();
+	
+					// Make the shape part of Tetris grid
+					do grid.gridMerge(shape.getGridArray());
+					do shape.dispose();
+					do grid.display();
+					
+					//Check for Complete rows in the Tetris grid to remove;
+					let completedRows = grid.rmFullRows();
+					if(completedRows > 0) {
+						do grid.refresh();
+					}				
+	
+					// Update the Score
+					let score = score + (10*completedRows) + 1;
+					do GameFunc.printScore(level, score);
+
+					let pieceLoop = false;
+
+				} else {
+					do shape.display();
+				}	
+				
+				do Sys.wait(100);
+
+			}
+		}
+
+		do shape.dispose();
+		return;
+	}
+
+	method void dispose() {
+		do grid.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+
+}

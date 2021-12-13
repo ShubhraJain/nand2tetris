@@ -1,0 +1,360 @@
+// This is the Grid Class
+// It contains a 1D array called grid that is often used as if it were a 2D array
+// by using the rows and cols fields when accessing elements.
+
+class Grid {
+	field int rows;
+	field int cols;
+	field Array grid;
+
+	constructor Grid new(int rowLen, int colLen) {
+		let rows = rowLen;
+		let cols = colLen;
+		let grid = Array.new(rows*cols);
+		return this;
+	}
+
+	// This function adds another array to the grid array.
+	// This is used to make shapes part of the Tetris grid.
+	method void gridMerge(Array new) {
+		var int i;
+		var int len;
+		let i = 0;
+		let len = rows*cols;
+		while(i < len) {
+			let grid[i] = grid[i] + new[i];
+			let i = i + 1;
+		}
+		return;
+	}
+
+	method Array getGridArray() {
+		return grid;
+	}
+
+	// This displays the black squares of the grid to the screen.
+	method void display() {
+		var int r;
+		var int c;
+		var int l;
+
+		let r = 0;
+		while(r < 16) {
+			let c = 0;
+			while(c < 12) {
+				if(grid[r + (rows*c)] = 1) {
+					let l = 0;
+					while(l < 16) {
+						do Memory.poke(16384 + 10 + (32*((16*r)+l)) + c , -1);
+						let l = l + 1;
+					}
+				}
+				let c = c + 1;
+			}
+			let r = r + 1;
+		} 		
+		return;
+	}
+
+	// This completely refreshes the displayed grid such that white and black squares are displayed to the screen.
+	method void refresh() {
+		var int r;
+		var int c;
+		var int l;
+
+		let r = 0;
+		while(r < 16) {
+			let c = 0;
+			while(c < 12) {
+				if(grid[r + (rows*c)] = 1) {
+					let l = 0;
+					while(l < 16) {
+						do Memory.poke(16384 + 10 + (32*((16*r)+l)) + c , -1);
+						let l = l + 1;
+					}
+				} else {
+					let l = 0;
+					while(l < 16) {
+						do Memory.poke(16384 + 10 + (32*((16*r)+l)) + c , 0);
+						let l = l + 1;
+					}
+				}
+				let c = c + 1;
+			}
+			let r = r + 1;
+		} 		
+		return;
+	}
+
+	// This makes the black elements of the grid to white on the screen.
+	// It is used for erasing shapes from the screen.
+	method void erase() {
+		var int r;
+		var int c;
+		var int l;
+
+		let r = 0;
+		while(r < 16) {
+			let c = 0;
+			while(c < 12) {
+				if(grid[r + (rows*c)] = 1) {
+					let l = 0;
+					while(l < 16) {
+						do Memory.poke(16384 + 10 + (32*((16*r)+l)) + c , 0);
+						let l = l + 1;
+					}
+				}
+				let c = c + 1;
+
+			}
+			let r = r + 1;
+
+		} 
+		return;
+
+	}
+	
+	// Set a particular location in the grid to black
+	method void setBlack(int r, int c) {
+		let grid[r + (rows*c)] = 1;
+		return;
+	}
+
+	// Set a particular location in the grid to white
+	method void setWhite(int r, int c) {
+		let grid[r + (rows*c)] = 0;
+		return;
+	}
+
+	// Used to move the shape down one row in the grid
+	method void shiftDown() {
+		var int i;
+		let i = (rows*cols) - 1;
+		while(i > 0) {
+			let grid[i] = grid[i-1];
+			let i = i - 1;
+		}
+		let grid[0] = 0;
+		return;
+	}
+
+	// Used to move a shape up one row in the grid
+	method void shiftUp() {
+		var int i;
+		var int len;
+		let i = 0;
+		let len = (rows*cols) - 1;
+		while(i < len) {
+			let grid[i] = grid[i+1];
+			let i = i + 1;
+		}
+		let grid[len] = 0;
+		return;
+	}
+
+	// Used to move the shape right one column in the grid
+	method void shiftRight() {
+		var int r;
+		var int c;
+		let c = cols - 1;
+		while(c > 0) {
+			let r = 0;
+			while(r < rows) {
+				let grid[r + (rows*c)] = grid[r + (rows*c) - rows];
+				let r = r + 1;
+			}
+			let c = c - 1;
+		}
+ 		let r = 0;
+		while(r < rows) {
+			let grid[r] = 0;		
+			let r = r + 1;
+		}
+		return;
+	}
+
+	// Used to move the shape left one column in the grid
+	method void shiftLeft() {
+		var int r;
+		var int c;
+		let c = 0;
+		while(c < (cols - 1)) {
+			let r = 0;
+			while(r < rows) {
+				let grid[r + (rows*c)] = grid[r + (rows*c) + rows];
+				let r = r + 1;
+			}
+			let c = c + 1;
+		}
+ 		let r = 0;
+		while(r < rows) {
+			let grid[r + (rows*c)] = 0;		
+			let r = r + 1;
+		}
+		return;
+	}
+
+	// Used to rotate the shape forward (clockwise) in the grid
+	// If rotation will put the shape outside the grid then fail
+	// Otherwise, rotate and then check if in valid position
+	method bool rotate(int x, int y, int rad) {
+		var Array temp;
+		var int r;
+		var int c;
+		var int i;
+		var int j;
+		var int l;
+
+		let l = (2*rad) + 1;
+		let temp = Array.new(l*l);	
+		
+		let i = 0;
+		let r = y - rad;
+		while(i < l) {
+			if((r < 0) | (r = rows)) {
+				do temp.dispose();	
+				return false;
+			}
+			let j = 0;
+			let c = x - rad;
+			while(j < l) {
+				if((c < 0) | (c = cols)) {
+					do temp.dispose();
+					return false;
+				}
+				let temp[i + (l*j)] = grid[r + (rows*c)];
+				let c = c + 1;
+				let j = j + 1;
+			}
+			let i = i + 1;
+			let r = r + 1;
+		}
+
+		let i = 0;
+		let c = x + rad;
+		while(i < l) {
+			let j = 0;
+			let r = y - rad;
+			while(j < l) {
+				let grid[r + (rows*c)] = temp[i + (l*j)];
+				let r = r + 1;
+				let j = j + 1;
+			}
+			let i = i + 1;
+			let c = c - 1;
+		}
+
+		do temp.dispose();
+		return true;
+	}
+
+	// Used to rotate the shape in the reverse direction in the grid
+	// If rotation will put the shape outside the grid then fail
+	// Otherwise, rotate and then check if in valid position
+	method bool revRotate(int x, int y, int rad) {
+		var Array temp;
+		var int r;
+		var int c;
+		var int i;
+		var int j;
+		var int l;
+		
+		let l = (2*rad) + 1;
+		let temp = Array.new(l*l);
+
+		let i = 0;
+		let r = y - rad;
+		while(i < l) {
+			if((r < 0) | (r = rows)) {
+				do temp.dispose();	
+				return false;
+			}
+			let j = 0;
+			let c = x - rad;
+			while(j < l) {
+				if((c < 0) | (c = cols)) {
+					do temp.dispose();
+					return false;
+				}
+				let temp[i + (l*j)] = grid[r + (rows*c)];
+				let c = c + 1;
+				let j = j + 1;
+			}
+			let i = i + 1;
+			let r = r + 1;
+		}
+		
+		let i = 0;
+		let c = x - rad;
+		while(i < l) {
+			let j = 0;
+			let r = y + rad;
+			while(j < l) {
+				let grid[r + (rows*c)] = temp[i + (l*j)];
+				let r = r - 1;
+				let j = j + 1;
+			}
+			let i = i + 1;
+			let c = c + 1;
+		}
+
+		do temp.dispose();
+		return true;
+	}
+
+	// Remove a row in the grid by shifting everything down. 
+	// Does not include the furthest left and furthest right column.
+	method void rmRow(int rowNum) {
+		var int r;
+		var int c;
+		
+		let c = 1;
+		while(c < (cols - 1)) {
+			let r = rowNum;
+			while(r > 0) {
+				let grid[r + (rows*c)] = grid[(r - 1) + (rows*c)];
+				let r = r - 1;
+			}
+			let grid[r + (rows*c)] = 0;
+			let c = c + 1;
+		}
+
+		return;
+	}
+
+	// Removes full rows in the grid and return the number of rows which were removed.
+	// Does not include the furthest left and furthest right column.
+	method int rmFullRows() {
+		var int r;
+		var int c;
+		var int count;		
+		var bool full;
+
+		let count = 0;		
+
+		let r = 0;
+		while(r < (rows - 1)) {
+			let c = 0;
+			let full = true;
+			while(c < cols) {
+				if(grid[r + (rows*c)] = 0) {
+					let full = false;
+				}
+				let c = c + 1;
+			}
+			if(full) {
+				do rmRow(r);
+				let count = count + 1;
+			}
+			let r = r + 1;
+		}
+
+		return count;
+	}
+
+	method void dispose() {
+		do grid.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+}

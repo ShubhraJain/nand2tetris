@@ -1,0 +1,55 @@
+class Main {
+  function void main() {
+    var int x1, y1, x2, y2, temp;
+    var char key;
+    var boolean exit;
+    let x1 = 0;
+    let y1 = 0;
+    let x2 = x1 + 32;
+    let y2 = y1 + 4;
+    // do Screen.drawRectangle(8, 4, 0, 0);
+    do Screen.drawRectangle(0, 0, 8, 4);
+
+    // let exit = true;
+    // while (exit) {
+    //   let key = Keyboard.keyPressed();
+    //   while (~(key = 0)) {
+    //     let key = Keyboard.keyPressed();
+    //     if (y1 < y2) { // move down
+    //       do Screen.setColor(false);
+    //       do Screen.drawRectangle(x1, y1, x1 + 4, y2);
+    //       // let x1 = x2 - 4;
+    //       // let y2 = y2 + 4;
+    //       do Screen.setColor(true);
+    //       do Screen.drawRectangle(x2 - 4, y1, x2, y2 + 4);
+    //     }
+    //     if (y1 = y2) {
+
+    //     }
+    //   }
+    // }
+    return;
+
+
+    // do Screen.setColor(false);
+    // do Screen.drawRectangle(x, y, x + 1, y + size);
+    // let x = x + 2;
+    // do Screen.setColor(true);
+    // do Screen.drawRectangle((x + size) - 1, y, x + size, y + size);
+    // do Screen.drawRectangle(20, 30, 24, 34);
+    // let exit = true;
+    // while (exit) {
+    //   let key = Keyboard.keyPressed();
+    //   while (~(key = 0)) {
+    //     let key = Keyboard.keyPressed();
+    //     if (y < 180) {
+    //       let y = y + 60;
+    //       do Output.printString("yayuy");
+    //       do Output.printInt(y);
+    //       do Screen.setColor(true);
+    //       do Screen.drawRectangle(x, y, x + 10, y + 10);
+    //     }
+    //   }
+    // }
+  }
+}

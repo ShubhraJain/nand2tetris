@@ -1,0 +1,17 @@
+// This jack program was created by Andrew Clappison for Project 9 of the Coursera Course:
+// "Build a Modern Computer from First Principles: Nand to Tetris Part II"
+// April 2021
+
+// This file was created using the 
+// projects/09/Square/Main.jack file as a template.
+
+/** Initialize a Tetris Game, run it, then dispose it. */
+class Main {
+	function void main() {
+		var Tetris game;
+		let game = Tetris.new();
+		do game.run();
+		do game.dispose();
+		return;
+	}
+}

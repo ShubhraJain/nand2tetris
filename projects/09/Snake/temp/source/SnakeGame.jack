@@ -1,0 +1,100 @@
+class SnakeGame {
+  field Snake snake;
+  field Food snakeFood;
+  field String direction;
+  field int counter;
+  field boolean begin;
+
+  constructor SnakeGame new() {
+    let snake = Snake.new();
+    return this;
+  }
+
+  method void beginGame() {
+    do Screen.setColor(false);
+    do Screen.drawRectangle(0, 0, 511, 255);
+    do Screen.setColor(true);
+    return;
+  }
+
+  method void drawSnake() {
+    // let direction = dir; // 0 -> right; 1 -> down; 2 -> left; 3 -> up
+    do snake.draw();
+    do snake.move(direction, false);
+    do Sys.wait(100);
+    if (~(begin)) {
+      do Screen.drawRectangle(snakeFood.getX(), snakeFood.getY(), snakeFood.getX() + 4, snakeFood.getY() + 4);
+    }
+    return;
+  }
+
+  method void eat() {
+    var SnakePart head;
+    let head = snake.getHead();
+    if ((head.getX() = snakeFood.getX()) & (head.getY() = snakeFood.getY())) {
+      do snake.move(direction, true);
+      let snakeFood = Food.new(counter);
+      do snakeFood.draw();
+    }
+    return;
+  }
+
+  method void run() {
+    var char key;
+    var boolean exit;
+    let exit = false;
+    do Output.println();
+    do Output.printString("Press P to play");
+    let counter = 0;
+    let direction = 0;
+    let begin = true;
+
+    while(~(key = 80)) {
+      let counter = counter + 1;
+      let key = Keyboard.keyPressed();
+    }
+    if (key = 80) {
+      do beginGame();
+      let snakeFood = Food.new(counter);
+      do drawSnake(); // when game begins, until user changes the direction, snake continues to move in right direction
+      do snakeFood.draw();
+      let key = Keyboard.keyPressed();
+      do eat();
+      let begin = false;
+    }
+
+    while(~(exit)) {
+      let counter = counter + 1;
+      while (key = 0) {
+        let key = Keyboard.keyPressed();
+        do drawSnake();
+        do eat();
+        }
+
+      if ((key = 130) & (~(direction = 0))) {
+        let direction = 2;
+      }
+      if ((key = 131) & (~(direction = 1))) {
+        let direction = 3;
+      }
+      if ((key = 132) & (~(direction = 2))){
+        let direction = 0;
+      }
+      if ((key = 133) & (~(direction = 3))){
+        let direction = 1;
+      }
+      if ((key = 81) | (snake.getStatus() = true)) { // q to exit
+        do Output.printString("ending");
+        do snake.endGame();
+        let exit = true;
+      }
+
+      while (~(key = 0)) {
+        let key = Keyboard.keyPressed();
+        do drawSnake();
+        do eat();
+      }
+    }
+    return;
+  }
+}

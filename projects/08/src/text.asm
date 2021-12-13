@@ -1,0 +1,33 @@
+@LCL
+D=M
+@endFrame
+M=D
+@5
+D=D-A
+@retAddr
+M=D
+@0
+D=A
+@ARG
+D=D+M
+@addr
+M=D
+@SP
+M=M-1
+A=M
+D=M
+@addr
+A=M
+M=D
+@ARG
+D=M
+@SP
+M=D+1
+@endFrame
+D=M-1
+// AM=D
+// D=M
+@THAT
+M=D
+@29
+0;JMP

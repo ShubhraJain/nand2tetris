@@ -1,0 +1,21 @@
+function Main.main 7
+push constant 0
+pop local 0
+push constant 0
+pop local 1
+push local 0
+push constant 32
+add
+pop local 2
+push local 1
+push constant 4
+add
+pop local 3
+push constant 0
+push constant 0
+push constant 8
+push constant 4
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return

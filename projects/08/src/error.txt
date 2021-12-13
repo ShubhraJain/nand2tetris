@@ -1,0 +1,35 @@
+*(-15) - Problems while executing the translated BasicLoop.asm program - Comparison failure at line 2
+*(-15) - The submitted VMTranslator failed to translate FibonacciElement
+*(-15) - The submitted VMTranslator failed to translate NestedCall
+*(-15) - The submitted VMTranslator failed to translate StaticsTest
+LOG:
+Archive: /shared/submission/project8.zip
+ inflating: project/CodeWriter.java 
+ inflating: project/Parser.java 
+ inflating: project/VMTranslator.java 
+ extracting: project/lang.txt 
+checking /shared/submission/project8.zip
+javac *.java
+chmod +x VMTranslator
+java.lang.NumberFormatException: For input string: "0 "
+ at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+ at java.base/java.lang.Integer.parseInt(Integer.java:652)
+ at java.base/java.lang.Integer.parseInt(Integer.java:770)
+ at Parser.arg2(Parser.java:88)
+ at VMTranslator.translateSingleFile(VMTranslator.java:20)
+ at VMTranslator.main(VMTranslator.java:65)
+error: java.lang.NumberFormatException: For input string: "0 "
+BasicLoop/BasicLoop.out
+| RAM[0] |RAM[256]|
+| 257 | 3 |
+BasicLoop/BasicLoop.cmp
+| RAM[0] |RAM[256]|
+| 257 | 6 |
+java.lang.NumberFormatException: For input string: "4000 //"
+ at java.base/java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+ at java.base/java.lang.Integer.parseInt(Integer.java:652)
+ at java.base/java.lang.Integer.parseInt(Integer.java:770)
+ at Parser.arg2(Parser.java:88)
+ at VMTranslator.translateSingleFile(VMTranslator.java:20)
+ at VMTranslator.main(VMTranslator.java:59)
+error: java.lang.NumberFormatException: For input string: "4000 //"

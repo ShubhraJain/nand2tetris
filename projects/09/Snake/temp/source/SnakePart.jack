@@ -1,0 +1,36 @@
+class SnakePart {
+
+	field int x, y;
+	field SnakePart next;
+
+	constructor SnakePart new(int a, int b, SnakePart nextPart) {
+		let x = a;
+		let y = b;
+		let next = nextPart;
+		return this;
+	}
+
+	method SnakePart getNext() {
+		return next;
+	}
+	
+	method void setNext(SnakePart nextPart) {
+		let next = nextPart;
+		return;
+	}
+
+	method int getX() {
+		return x;
+	}
+
+	method int getY() {
+		return y;
+	}
+
+	method void dispose() {
+		if (~(next = null)) {
+      do next.dispose();
+		}
+		return;
+	}
+}

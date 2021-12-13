@@ -1,0 +1,25 @@
+class Food {
+
+  field int x, y;
+  field Random rand;
+  
+  constructor Food new(int a) {
+    do rand.setSeed(a);
+    return this;
+  }
+
+  method void draw() {
+    let x = rand.randRange(127);
+    let y = rand.randRange(63);
+    do Screen.drawRectangle(x, y, x + 4, y + 4);
+    return;
+  }
+
+  method int getX() {
+    return x;
+  }
+
+  method int getY() {
+    return y;
+  }
+}

@@ -1,0 +1,69 @@
+// This is the GameFunc class
+// It contains functions for checking if the 1's in two arrays overlap, which
+// is useful to check if a shape overlaps the Tetris grid. 
+// It also contains functions for displaying text on on screen.
+
+class GameFunc {
+
+	// Check if two arrays both are marked > 0 in the same location. 
+	// This function is used taking the array from the tetris grid and
+	// shape grid to see if the shape is allowed in a particular position. 
+	function bool checkOverlap(Array a1, Array a2, int len) {
+		var int i;
+		
+		let i = 0;
+		while(i < len) {
+			if((a1[i] > 0) & (a2[i] > 0)) {
+				return true;
+			}
+			let i = i + 1; 
+		}
+
+		return false;
+	}
+
+	// Print the game info on the upper left side of the screen.
+	function void printInfo() {
+		do Output.printString("From Nand to Tetris");
+		do Output.println();
+		do Output.printString("Coursera Course");
+		do Output.println();
+		do Output.printString("Week 9 Project");
+		do Output.println();
+		do Output.printString("By: Andrew Clappison");
+		do Output.println();
+		do Output.printString("Year: 2021");
+		return;
+	}
+
+	// Print the score on the lower left side of the screen.
+	function void printScore(int level, int score) {
+		//do Output.moveCursor(14, 0);
+		//do Output.printString("Level: ");
+		//do Output.printInt(level);
+		do Output.moveCursor(15,0);
+		do Output.printString("Score: ");
+		do Output.printInt(score);
+		return;
+	}
+
+	// Print the Tetris Key Controls onto the upper right side of the screen.
+	function void printInstructions() {
+		do Output.moveCursor(0, 45);
+		do Output.printString("Key Controls");
+		do Output.moveCursor(2, 45);
+		do Output.printString("F: Forward Rotate");
+		do Output.moveCursor(3, 45);
+		do Output.printString("R: Reverse Rotate");
+		do Output.moveCursor(5, 45);
+		do Output.printString("Left Arrow: Left");
+		do Output.moveCursor(6, 45);
+		do Output.printString("Right Arrow: Right");
+		do Output.moveCursor(7, 45);
+		do Output.printString("Down Arrow: Down");
+		do Output.moveCursor(9, 45);
+		do Output.printString("Q: Quit Game");
+		return;
+	}
+
+}

@@ -1,0 +1,134 @@
+class Snake {
+  field SnakePart tail, head;
+  field boolean status; 
+
+  constructor Snake new() {
+    var int i;
+    var SnakePart cur;
+    let i = 0;
+    let cur = null;
+    while (i < 8) {
+      let cur = SnakePart.new(28 - (4 * i), 0, cur);
+      if (i = 0) {
+        let head = cur;
+      }
+      let i = i + 1;
+    }
+    let tail = cur;
+    return this;
+  }
+
+  method SnakePart getHead() {
+    return head;
+  }
+
+  method SnakePart getTail() {
+    return tail;
+  }
+
+  method SnakePart pop() {
+    var SnakePart temp, cur;
+    let cur = tail;
+    let tail = tail.getNext();
+    return cur;
+  }
+
+  method void push(int headX, int headY) {
+    var SnakePart temp;
+    let temp = SnakePart.new(headX, headY, null);
+    do head.setNext(temp);
+    let head = temp;
+    return;
+  }
+
+  method void move(int direction, boolean eating) {
+    var SnakePart prevTail;
+    if (direction = 0) { // going right
+      if (head.getX() + 4 < 512) {
+        do push(head.getX() + 4, head.getY());
+      }
+      if (head.getX() + 4 > 511) {
+        do endGame();
+        return;
+      }
+    }
+    if (direction = 1) { // going down
+      if (head.getY() + 4 < 256) {
+        do push(head.getX(), head.getY() + 4);
+      }
+      if (head.getY() + 4 > 255) {
+        do endGame();
+        return;
+      }
+    }
+    if (direction = 2) { // going left
+      if (~(head.getX() - 4 < 0)) {
+        do push(head.getX() - 4, head.getY());
+      }
+      if (head.getX() - 4 < 0) {
+        do endGame();
+        return;
+      }
+    }
+    if (direction = 3) { // going up
+      if (~(head.getY() - 4 < 0)) {
+        do push(head.getX(), head.getY() - 4);
+      }
+      if (head.getY() - 4 < 0) {
+        do endGame();
+        return;
+      }
+    }
+    if (~(eating)) {
+      let prevTail = pop();
+      do draw();
+      do Screen.setColor(false);
+      do Screen.drawRectangle(prevTail.getX(), prevTail.getY(), prevTail.getX() + 4, prevTail.getY() + 4);
+      do prevTail.dispose();
+      do Screen.setColor(true);
+    }
+    if (hasLoop()) {
+      do endGame();
+    }
+    return;
+  }
+
+  method void draw() {
+    var SnakePart current;
+    var int a, b;
+    let current = tail;
+    while (~(current = null)) {
+      let a = current.getX();
+      let b = current.getY();
+      do Screen.drawRectangle(a, b, (a + 4), (b + 4));
+			let current = current.getNext();
+		}
+    return;
+  }
+
+  method boolean hasLoop() {
+    var SnakePart temp, cur;
+    let cur = tail;
+    while (~(cur = head)) {
+      if ((cur.getX() = head.getX()) & (cur.getY() = head.getY())) {
+        return true;
+      }
+      let cur = cur.getNext();
+    }
+    return false;
+  }
+
+  method void endGame() {
+    let status = true;
+    do Screen.setColor(false);
+    do Screen.drawRectangle(0, 0, 511, 255);
+    do Screen.setColor(true);
+    do Output.printString("GAME OVER!");
+    do Sys.halt();
+    return;
+  }
+
+  method boolean getStatus() {
+    return status;
+  }
+}
