@@ -12,7 +12,6 @@ public class VMTranslator {
     String[] vmFileName = args[0].split(".vm");
     File inputFile = new File(Paths.get(System.getProperty("user.dir")) + "/" + args[0]);
     File outputFile = new File(Paths.get(System.getProperty("user.dir")) + "/" + vmFileName[0] + ".asm");
-    System.out.println("op file: " + outputFile);
     CodeWriter codeWriter = new CodeWriter();
     String[] arr = vmFileName[0].split("/");
     String fileName = arr[arr.length - 1];

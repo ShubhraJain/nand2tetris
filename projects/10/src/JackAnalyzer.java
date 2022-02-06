@@ -32,7 +32,7 @@ public class JackAnalyzer {
     if (inputFile.isDirectory()) {
       inputFiles = inputFile.listFiles(new VMFileNameFilter());
       for (File f: inputFiles) {
-        opFile = new File(f.getName().replace(".jack", "") + ".xml");
+        opFile = new File(f.getParent() + "/" + f.getName().replace(".jack", "") + ".xml");
         translateFile(f, opFile);
       }
     } else {

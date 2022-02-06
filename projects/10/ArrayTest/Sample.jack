@@ -1,1 +1,30 @@
-do Output.println();
+class Main { 
+  function void main() {
+    var Array a;
+    var int length;
+    var int i, sum;
+
+    let length = Keyboard.readInt("HOW MANY NUMBERS? ");
+    let a = Array.new(length);
+    let i = 0; // fix it
+
+    while (i < length) {
+      let a[i] = Keyboard.readInt("ENTER THE NEXT NUMBER: ");
+      let i = i + 1; // fix it
+    }
+
+    let i = 0;  // fix it
+	  let sum = 0; // fix it
+
+    while (i < length) {
+	    let sum = sum + a[i];
+	    let i = i + 1; // fix it
+	  }
+
+    do Output.printString("THE AVERAGE IS: ");
+    do Output.printInt(sum / length);
+    do Output.println();
+
+    return;
+  }
+}

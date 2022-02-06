@@ -24,7 +24,6 @@ public class CodeWriter {
     sb.append(s+"\n");
   }
 
-  // throw the exception or catch it?
   public void writePushPop(String command, String segment, int index, String fileName) {
     if (command.equals("C_PUSH")) {
       addComment("// push " + segment + " " + index);
