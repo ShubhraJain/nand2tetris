@@ -1,0 +1,9 @@
+function Main.main 0
+and
+push constant 0
+eq
+not
+if-goto IF_TRUE-1
+goto IF_FALSE-1
+label IF_TRUE-1
+label IF_FALSE-1

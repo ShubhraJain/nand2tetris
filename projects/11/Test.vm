@@ -1,0 +1,4 @@
+function Main.main 0
+push constant 10
+eq
+pop NONE 0
