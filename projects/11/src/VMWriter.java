@@ -2,8 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileWriter;
 
-public class VMWriter {
-  private String[] segments = {"CONST", "ARG", "LOCAL", "STATIC", "THIS", "THAT", "POINTER", "TEMP"};
+public class VMWriter implements AutoCloseable {
   private StringBuilder sb;
   File opFile;
   
@@ -12,47 +11,47 @@ public class VMWriter {
     sb = new StringBuilder();
   }
 
-  private void writeCommand(String s) {
+  public void writeCommand(String s) {
     sb.append(s+"\n");
   }
 
-  private void writePush(String segment, int index) {
-    writeCommand("PUSH " + segment + " " + index);
+  public void writePush(String segment, int index) {
+    writeCommand("push " + segment + " " + index);
   }
   
-  private void writePop(String segment, int index) {
-    writeCommand("POP " + segment + " " + index);
+  public void writePop(String segment, int index) {
+    writeCommand("pop " + segment + " " + index);
   }
 
-  private void writeArithmetic(String command) {
+  public void writeArithmetic(String command) {
     writeCommand(command);
   }
 
-  private void writeLabel(String label) {
+  public void writeLabel(String label) {
     writeCommand("label " + label);
   }
 
-  private void writeGoto(String label) {
+  public void writeGoto(String label) {
     writeCommand("goto " + label);
   }
 
-  private void writeIf(String label) {
+  public void writeIf(String label) {
     writeCommand("if-goto " + label);
   }
   
-  private void writeCall(String name, int numOfArgs) {
-    writeCommand("call " + name + numOfArgs);
+  public void writeCall(String name, int numOfArgs) {
+    writeCommand("call " + name + " " + numOfArgs);
   }
 
-  private void writeFunction(String name, int numOfLocals) {
-    writeCommand("function " + name + numOfLocals);
+  public void writeFunction(String name, int numOfLocals) {
+    writeCommand("function " + name + " " + numOfLocals);
   }
 
-  private void writeReturn() {
+  public void writeReturn() {
     writeCommand("return");
   }
 
-  private void close() throws IOException {
+  public void close() throws IOException {
     FileWriter fw = new FileWriter(opFile);
     fw.write(sb.toString());
     fw.close();

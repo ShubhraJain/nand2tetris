@@ -116,7 +116,7 @@ public class JackTokenizer implements AutoCloseable {
     }
   }
 
-  private void finishToken(boolean resetCode) {
+  private void finishToken(boolean resetCode) throws IOException {
     currentToken = tempToken.toString();
     tempToken.setLength(0);
     // set tokenType based on current state and currentToken
@@ -132,7 +132,7 @@ public class JackTokenizer implements AutoCloseable {
     tokenConsumed = true;
   }
 
-  private void handleIdentifier(char c) {
+  private void handleIdentifier(char c) throws IOException {
     if (Character.isLetterOrDigit(c) || c == '_') {
       tempToken.append(c);
       return;
@@ -142,7 +142,7 @@ public class JackTokenizer implements AutoCloseable {
     }
   }
 
-  private void handleInteger(char c) {
+  private void handleInteger(char c) throws IOException {
     if (Character.isDigit(c)) {
       tempToken.append(c);
       return;
@@ -166,7 +166,7 @@ public class JackTokenizer implements AutoCloseable {
     }
   }
 
-  private void handleString(char c) {
+  private void handleString(char c) throws IOException {
     if (c == '"') {
       finishToken(false);
       return;
