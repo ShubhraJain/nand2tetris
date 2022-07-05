@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "ROOT",
+      "path": "../"
+    },
+    {
+      "name": "project-11",
+      "path": "../projects/11/"
+    }
+  ],
+  "settings": {
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ]
+  
+  }
+
+}
