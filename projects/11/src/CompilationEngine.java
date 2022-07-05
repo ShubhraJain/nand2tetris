@@ -160,7 +160,6 @@ public class CompilationEngine {
         vmWriter.writePop("pointer", 0);
       }
       compileStatements();
-      System.out.println("CT AND AA " + getToken() + " " + alreadyAdvanced);
       if(!alreadyAdvanced) {
         tokenizer.advance();
       }
@@ -216,11 +215,9 @@ public class CompilationEngine {
     }
     while(statementNames.contains(getToken())) {
       compileStatement();
-      // System.out.println("CURR TOKEN " + getToken() + " " + alreadyAdvanced);
       if(!alreadyAdvanced) {
         tokenizer.advance();
       }
-      // System.out.println("CURR TOKEN " + getToken());
       alreadyAdvanced = true;
     }
     return;
@@ -228,19 +225,14 @@ public class CompilationEngine {
 
   private void compileStatement() throws IOException {
     if(getToken().equals("let")) {
-      // System.out.println("LET STATEMENT");
       compileLetStatement();
     } else if(getToken().equals("while")) {
-      // System.out.println("WHILE STATEMENT");
       compileWhileStatement();
     } else if(getToken().equals("do")) {
-      // System.out.println("DO STATEMENT");
       compileDoStatement();
     } else if(getToken().equals("return")) {
-      // System.out.println("RETURN STATEMENT");
       compileReturnStatement();
     } else if(getToken().equals("if")) {
-      // System.out.println("IF STATEMENT");
       compileIfStatement();
     }
     return;
@@ -248,7 +240,6 @@ public class CompilationEngine {
 
   private void compileLetStatement() throws IOException {
     tokenizer.advance();
-    // System.out.println("LET CURR TOKEN " + getToken());
     String varName = getToken(); // variable name
     tokenizer.advance();
     alreadyAdvanced = true;
@@ -268,10 +259,8 @@ public class CompilationEngine {
     } else {
       alreadyAdvanced = false;
       tokenizer.advance();
-      // System.out.println("getToken " + getToken());
       compileExpression();
       tokenizer.advance();
-      // tokenizer.advance();
       alreadyAdvanced = true;
       vmWriter.writePop(symbolTable.kindOf(varName), symbolTable.indexOf(varName));
     }
@@ -286,10 +275,8 @@ public class CompilationEngine {
     vmWriter.writeIf(IF_LABEL + index);
     vmWriter.writeGoto(ELSE_LABEL + index);
     vmWriter.writeLabel(IF_LABEL + index);
-    System.out.println("IF 1st " + getToken());
     tokenizer.advance(); // {
     tokenizer.advance(); // statements
-    System.out.println("IF 2nd " + getToken());
     compileStatements();
     tokenizer.advance(); // }
     if (getToken().equals("else")) {
@@ -316,7 +303,6 @@ public class CompilationEngine {
     }
     vmWriter.writeIf(ENDWHILE_LABEL + index);
     tokenizer.advance();
-    // System.out.println("COMPILING WHILE STATEMENT " + alreadyAdvanced + " " + getToken());
     compileStatements();
     tokenizer.advance();
     vmWriter.writeGoto(WHILE_LABEL + index);
@@ -329,15 +315,12 @@ public class CompilationEngine {
     tokenizer.advance(); //. or (
     int numOfArgs = 0;
     if((name + getToken()).matches("[a-zA-Z].*")) {
-      // System.out.println("IN DO's IF ");
       name += getToken();
       tokenizer.advance();
       name += getToken();
       tokenizer.advance();
-      // System.out.println("COMPILING DO STATEMENT " +  getToken());
     } else {
       numOfArgs++;
-      // System.out.println(" IN DO's ELSE");
       if (getToken().equals(".")) {
         vmWriter.writePush(symbolTable.kindOf(name), symbolTable.indexOf(name));
         name = symbolTable.typeOf(name);
@@ -351,13 +334,10 @@ public class CompilationEngine {
       }
     }
     tokenizer.advance(); // 1
-    // tokenizer.advance();
     numOfArgs += compileExpressionList();
-    // System.out.println("nArgs: " + numOfArgs);
     vmWriter.writeCall(name, numOfArgs);
     tokenizer.advance();
     alreadyAdvanced = false;
-    // System.out.println("DO curr token: " + getToken());
     vmWriter.writePop("temp", 0);
   }
 
@@ -374,7 +354,6 @@ public class CompilationEngine {
       tokenizer.advance();
     }
     vmWriter.writeReturn();
-    // tokenizer.advance();
   }
 
   private void writeString(String str) {
@@ -446,7 +425,6 @@ public class CompilationEngine {
           case ">":
           case "=":
           case ",":
-            // System.out.println("TOKEN " + getToken());
             break;
           case "(":
             tokenizer.advance();
@@ -465,7 +443,6 @@ public class CompilationEngine {
             break;
           case ".":
             alreadyAdvanced = false;
-            // System.out.println("ALREADY ADVANCED IN . ");
             vmWriter.writePush(symbolTable.kindOf(name), symbolTable.indexOf(name));
             name += getToken();
             tokenizer.advance();
@@ -480,6 +457,8 @@ public class CompilationEngine {
             System.out.println(getToken() + " is not a valid term");
             return;
         }
+      default:
+        break;
     }
   }
 
@@ -499,9 +478,12 @@ public class CompilationEngine {
 
   private void compileExpression() throws IOException {
     compileTerm();
+    if(!alreadyAdvanced) {
+      tokenizer.advance();
+      alreadyAdvanced = true;
+    }
     String op = "";
     while ("+-*/&|<>=".contains(getToken())) {
-      alreadyAdvanced = false;
       switch (getToken()) {
         case "+":
           op = "add";
@@ -534,17 +516,18 @@ public class CompilationEngine {
           op = "not";
           break;
       }
-      // System.out.println("ABOUT TO ADVANCE " + getToken());
+      alreadyAdvanced = false;
       tokenizer.advance();
-      // System.out.println("BEFORE COMPILING TERM " + getToken());
       compileTerm();
       if (op.equals("Math.multiply") || op.equals("Math.divide")) {
         vmWriter.writeCall(op, 2);
       } else {
         vmWriter.writeArithmetic(op);
       }
-      tokenizer.advance();
-      alreadyAdvanced = true;
+      if(!alreadyAdvanced) {
+        tokenizer.advance();
+        alreadyAdvanced = true;
+      }
     }
     if(!alreadyAdvanced) {
       tokenizer.advance();
@@ -648,7 +631,6 @@ public class CompilationEngine {
     int nArgs = 0;
     while(!")".equals(getToken())) {
       compileExpression();
-      // System.out.println("IN COMPILE EXP LIST " + getToken());
       while(getToken().equals(",")) {
         alreadyAdvanced = false;
         tokenizer.advance();
@@ -657,7 +639,6 @@ public class CompilationEngine {
       }
       nArgs++;
     }
-    // System.out.println("ARGS " + nArgs);
     return nArgs;
   }
 }
